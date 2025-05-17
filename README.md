@@ -20,9 +20,6 @@ El Sistema de Gestión de Turnos es una solución integral para la administraci�
 3. **Notificación**: Dispara alertas simultáneas a:
    - Sistema de pantallas (visual)
    - Sistema de audio (auditiva)
-
-### Elementos Clave del Diagrama
-
 #### Relaciones Estructurales
 1. **Extensión** (`‹‹extend››`):
    - `Cancelar Turno` extiende `Consultar Turno` (relación condicional)
@@ -32,18 +29,7 @@ El Sistema de Gestión de Turnos es una solución integral para la administraci�
    - `Generar Código` requiere obligatoriamente `Solicitar Turno`
    - `Notificar Turno` siempre ejecuta `Atender Turno`
    - *Ventaja*: Garantiza integridad del proceso
-
-### Análisis Técnico
-**Patrones aplicados**:
-1. **Facade** (en `Llamar Turno`):
-   - Simplifica interacción con subsistemas complejos (pantallas/audio)
-   
-2. **Observer**:
-   - Notificaciones multicanal se actualizan automáticamente
-
-**Reglas de negocio mapeadas**:
-- Secuencia estricta: Generar → Asignar → Notificar
-- Priorización configurable por servicio
+     
 
 ---
 
@@ -52,23 +38,29 @@ El Sistema de Gestión de Turnos es una solución integral para la administraci�
 ## Diagrama de Clases UML
 ![diagramaClases](https://github.com/user-attachments/assets/1b448a3d-e19e-490e-b8fc-8622e10371b5)
 
-
 ### Patrones Implementados:
-1. **Singleton**:
-   - `Turno`: Garantiza una única instancia controladora
-   - Justificación: Evita conflictos en asignación concurrente
 
-2. **Observer**:
-   - Relación entre `Turno` y `SistemaNotificación`
-   - Ventaja: Notificaciones en tiempo real sin acoplamiento
+1. **Singleton**:
+   - `TurnoRepositoryImpl`: Garantiza única instancia del repositorio
+   - Justificación: Centraliza el acceso a datos de turnos y previene inconsistencia en entornos concurrentes
+
+2. **Strategy**:
+   - **FIFOStrategy**:
+     - Implementa cola tradicional (first-in-first-out)
+     - `asignaTurno()` devuelve el empleado más antiguo disponible
+     - Ideal para servicios estándar sin prioridades
+   
+   - **RoundRobinStrategy**:
+     - Asignación rotativa equitativa entre empleados
+     - `asignaTurno()` cicla mediante índice rotatorio
+     - Optimiza distribución de carga laboral
 
 3. **Factory Method**:
-   - `GeneradorReportes` con implementaciones concretas (PDF, Excel)
-   - Beneficio: Extensibilidad para nuevos formatos
+   - `TurnoFactory` con implementaciones:
+     - `TurnoNormalFactory`: Genera códigos con prefijo "N-"
+     - `TurnoPrioritarioFactory`: Genera códigos con prefijo "P-"
+   - Beneficio: Centraliza lógica de creación según tipo de turno
 
-4. **Strategy**:
-   - Algoritmos intercambiables para `AsignadorTurnos` (FIFO, Prioridad)
-   - Impacto: Flexibilidad en políticas de atención
 
 ---
 
@@ -88,3 +80,35 @@ El Sistema de Gestión de Turnos es una solución integral para la administraci�
 3. **Persistencia**:
    - PostgreSQL para datos transaccionales
    - Redis para caché de turnos activos
+  
+
+## Reflexiones Finales de Modelado
+
+### Lecciones Clave Aprendidas
+
+1. **Efectividad de Patrones**:
+   - El patrón **Strategy** permitió cambiar políticas de asignación sin modificar código base
+   - **Factory Method** simplificó la creación de turnos con diferentes lógicas de generación
+   - **Singleton** aseguró consistencia en el repositorio de turnos
+
+2. **Validación Práctica**:
+   - El modelo inicial requirió ajustes para:
+     - Manejar casos de empleados no disponibles
+     - Gestionar turnos prioritarios vs regulares
+   - La separación entre generación y asignación demostró ser acertada
+
+3. **Resultados Concretos**:
+   - Reducción de tiempos de asignación
+   - Mayor flexibilidad para agregar nuevos tipos de turnos
+   - Centralización del manejo de estados
+  
+### Análisis Crítico
+
+**Fortalezas**:
+✔ Sistema altamente modular y mantenible  
+✔ Fácil extensión para nuevos requerimientos  
+✔ Buen desempeño en condiciones normales  
+
+**Debilidades**:
+✖ Complejidad inicial en configuración  
+✖ Falta de manejo de errores en flujos alternativos  
