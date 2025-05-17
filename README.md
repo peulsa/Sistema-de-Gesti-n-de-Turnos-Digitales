@@ -76,10 +76,6 @@ El Sistema de Gestión de Turnos es una solución integral para la administraci�
 2. **Integraciones**:
    - API REST para sistemas externos (pantallas/audio)
    - Protocolo WebSocket para notificaciones en tiempo real
-
-3. **Persistencia**:
-   - PostgreSQL para datos transaccionales
-   - Redis para caché de turnos activos
   
 
 ## Reflexiones Finales de Modelado
@@ -87,9 +83,9 @@ El Sistema de Gestión de Turnos es una solución integral para la administraci�
 ### Lecciones Clave Aprendidas
 
 1. **Efectividad de Patrones**:
-   - El patrón **Strategy** permitió cambiar políticas de asignación sin modificar código base
-   - **Factory Method** simplificó la creación de turnos con diferentes lógicas de generación
-   - **Singleton** aseguró consistencia en el repositorio de turnos
+   - El patrón **Strategy** permitia cambiar políticas de asignación sin modificar código base
+   - **Factory Method** simplifica la creación de turnos con diferentes lógicas de generación
+   - **Singleton** asegura consistencia en el repositorio de turnos
 
 2. **Validación Práctica**:
    - El modelo inicial requirió ajustes para:
@@ -105,10 +101,13 @@ El Sistema de Gestión de Turnos es una solución integral para la administraci�
 ### Análisis Crítico
 
 **Fortalezas**:
+
 ✔ Sistema altamente modular y mantenible  
 ✔ Fácil extensión para nuevos requerimientos  
 ✔ Buen desempeño en condiciones normales  
 
 **Debilidades**:
+
 ✖ Complejidad inicial en configuración  
 ✖ Falta de manejo de errores en flujos alternativos  
+✖ No hay implementación de la clase de Generar Reportes
